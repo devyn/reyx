@@ -38,13 +38,18 @@ module Reyx
         def process_cmd sock, sockinfo, cmd
             case cmd
             when /^\@ /
-                puts "Socket:#{sock.object_id.abs.to_s(16)} logging in."
-                # for now, automatically approve
-                sockinfo['user'] = cmd.chomp.sub(/^\@ /, '').split(":")[0]
-                sock.puts "@ @ @   CONFIRMED   @ @ @"
+                if Reyx::Auth.user_auth_correct? *cmd.chomp.sub(/^\@ /, '').split(":")[0..1]
+                    sockinfo['user'] = cmd.chomp.sub(/^\@ /, '').split(":")[0]
+                    sock.puts "@ @ @   CONFIRMED   @ @ @"
+                    puts "Socket:#{sock.object_id.abs.to_s(16)} logged in as #{sockinfo['user']}"
+                else
+                    sock.puts "@ @ @   DENIED   @ @ @"
+                    puts "Socket:#{sock.object_id.abs.to_s(16)} hacking attempt foiled! (incorrect username/password)"
+                end
             when /^\$ /
                 puts "Socket:#{sock.object_id.abs.to_s(16)} executing shell command: #{cmd.chomp.sub(/^\$ /, '')}"
-                # Reyx::Shell.run(cmd.sub(/^\$ /, ''), sock, sockinfo['user'])
+                # Reyx::Shell.run(cmd.sub(/^\$ /, ''), sock, sockinfo['user']
+                sock.puts "nothing to see here yet, folks!"
                 sock.puts "$ $ $   NEXT   $ $ $"
             when /^\? /
                 puts "Socket:#{sock.object_id.abs.to_s(16)} requesting information: #{cmd.chomp.sub(/^\? /, '')}"
