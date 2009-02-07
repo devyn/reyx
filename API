@@ -1,0 +1,32 @@
+Filesystem:
+    Services:
+        app-data:
+            For accessing application configuration, etc.
+            app-data:<user>:<application>:<file> => /Users/<user>/<application>/<file>
+        application:
+            For retrieving application static files.
+            application:<application>:<file> => /Applications/<application>/<file>
+        temp:
+            For temporarily storing a file, eg. a resource.
+            temp:<application>:<file> => /Temporary Files/<application>/<file>
+        device:
+            For accessing a file on a device.
+            device:<name>:<file> => <lookup mounted <name>>/<file>
+        sys-data:
+            For accessing system configuration, etc.
+            sys-data:<file> => /System Files/<file>
+        net:
+            For retrieving a file stored on the web (through http)
+            net:<host>[~<port>][:<path>] => http://<host>:<port>/<path>
+        user-file:
+            For accessing a file stored manually by the user.
+            user-file:<user>:<file> => /Users/<user>/Personal Files/<file>
+Init:
+    run(ty)     # Run the task   section in sys-data:init.yml
+    up          # Run the "up"   section in sys-data:init.yml
+    down        # Run the "down" section in sys-data:init.yml
+Daemon:
+    start       # Start the daemon, and run Init.up
+    stop        # Stop  the daemon, closing any existing connections and running Init.down
+    thread.join # Join  the daemon's thread so it doesn't close on end of file.
+
