@@ -1,13 +1,20 @@
 require 'fileutils'
+require 'yaml'
 module Reyx
     # file system functions (Reyx only)
     module FS; extend self
         attr_accessor :host_dir, :device_table
         @host_dir = File.expand_path(ENV['REYX_HOST_DIR']||"~/.reyx")
-        @device_table = []
+        @device_table = {}
         def open(p, mode='r', &blk)
             FileUtils.mkdir_p File.dirname(translate_path(p))
             File.open(translate_path(p), mode, &blk)
+        end
+        def conf_open(p, &blk)
+            y = open(p) {|f| YAML.load(f) }
+            yield y
+            open(p,'w') {|f| YAML.dump(y, f)}
+            true
         end
         def parse_path(p)
             a = p.split(':')

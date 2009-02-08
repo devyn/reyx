@@ -2,15 +2,16 @@ require 'yaml'
 module Reyx
     module Init; extend self
         def run ty
-            tt = Reyx::FS.open("sys-data:init.yml") {|f| YAML.load(f)[ty] }
-            puts "%% Init: running @#{ty}"
-            tt.each do |tsw|
-                tsw.each do |ts, des|
-                    puts "%%\t#{des}"
-                    # Reyx::Shell.run(ts, $stdout, 'admin')
+            puts "%% \e[1mInit:\e[0m running \e[32m@#{ty}\e[0m"
+            Reyx::FS.conf_open "sys-data:init.yml" do |tt|
+                tt[ty].each do |tsw|
+                    tsw.each do |ts, des|
+                        puts "%%\t\e[33m#{des}\e[0m"
+                        Reyx::Shell.run(ts, $stdout, $stdin, 'admin')
+                    end
                 end
             end
-            puts "%% Init: completed @#{ty}"
+            puts "%% \e[1mInit:\e[0m completed \e[32m@#{ty}\e[0m"
             true
         end
         def up; run 'up'; end
