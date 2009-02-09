@@ -34,8 +34,8 @@ when 'info'
 end
 EOF
         end
-        %w(acl host-probed mount unmount status switch translate update-init useradd userdel userpwd).each do |p|
-            Reyx::Applications.install_host_package "apps/#{p}.rxp"
+        Dir.glob("apps/*.rxp").each do |p|
+            Reyx::Applications.install_host_package p
         end
     end
 end
