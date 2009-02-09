@@ -1,17 +1,21 @@
 DCZ4{}
-{"group":1000,"user":1000,"size":193,"name":"Applications\/status\/app.rb","mode":33188}
+{"group":1000,"user":1000,"size":404,"name":"Applications\/status\/app.rb","mode":33188}
 # Show information about the system.
 @output.puts "\e[1m# Mounted Devices\e[0m"
 Reyx::FS.device_table.each do |path, mto|
     @output.puts "\e[32mdevice:#{path}\e[0m => \e[31m#{mto}\e[0m"
 end
+@output.puts "\e[1m# Users logged on\e[0m"
+Reyx::Daemon.connections.each do |c|
+    @output.puts "\e[36mSocket:\e[1m#{c[0].object_id.abs.to_s(16)}\e[0m | \e[34m#{c[1]['user'] or "\e[31mnot logged in"}\e[0m"
+end
 
 
-{"group":1000,"user":1000,"size":89,"name":"Applications\/status\/app.yml","mode":33188}
+{"group":1000,"user":1000,"size":102,"name":"Applications\/status\/app.yml","mode":33188}
 --- 
 full-name: Reyx VM Status
 usage: |
-  status # show mount points
+  status # show mount points, other users
 
 short-name: status
 

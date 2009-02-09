@@ -5,6 +5,7 @@ module Reyx
         @connections = []
         @thread = nil
         attr_reader :thread
+        attr_reader :connections
         def start
             Reyx::Init.up
             @thread = Thread.start do

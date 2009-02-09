@@ -1,6 +1,6 @@
 --- 
 full-name: Reyx VM Status
 usage: |
-  status # show mount points
+  status # show mount points, other users
 
 short-name: status
