@@ -1,0 +1,10 @@
+---
+short-name: userdel
+full-name: Remove a User
+users-allowed:
+- admin
+
+usage: |
+  userdel <user> # delete a user
+
+

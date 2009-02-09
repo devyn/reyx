@@ -1,0 +1,23 @@
+DCZ4{}
+{"group":1000,"user":1000,"size":344,"name":"Applications\/switch\/app.rb","mode":33188}
+# switch users for one command
+u = @args.shift
+upw = nil
+Reyx::FS.conf_open "sys-data:users.yml" do |y|
+    upw = y[u]['password']
+end
+@output.puts "$ $ $   PROMPT-MASK: Password:    $ $ $"
+if upw == @input.gets.chomp
+    Reyx::Shell.run(@args.shift, @output, @input, u, @path)
+else
+    @output.puts "error: invalid user name or password."
+end
+
+{"group":1000,"user":1000,"size":105,"name":"Applications\/switch\/app.yml","mode":33188}
+---
+short-name: switch
+full-name: Switch Users
+usage: |
+  switch <user> <command> # run command as user
+
+

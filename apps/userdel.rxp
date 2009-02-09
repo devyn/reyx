@@ -1,0 +1,18 @@
+DCZ4{}
+{"group":1000,"user":1000,"size":76,"name":"Applications\/userdel\/app.rb","mode":33188}
+Reyx::FS.conf_open "sys-data:users.yml" do |y|
+    y.delete @args.shift
+end
+
+{"group":1000,"user":1000,"size":117,"name":"Applications\/userdel\/app.yml","mode":33188}
+---
+short-name: userdel
+full-name: Remove a User
+users-allowed:
+- admin
+
+usage: |
+  userdel <user> # delete a user
+
+
+

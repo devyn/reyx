@@ -1,0 +1,10 @@
+---
+short-name: useradd
+full-name: Add a User
+users-allowed:
+- admin
+
+usage: |
+  useradd <user> # add a user
+
+

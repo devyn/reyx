@@ -1,0 +1,8 @@
+--- 
+full-name: Mount Host Device
+usage: |
+  mount <mount-point> <host-path> # mount a host device on devices:<mount-point>
+
+users-allowed: 
+- admin
+short-name: mount

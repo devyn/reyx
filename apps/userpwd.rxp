@@ -1,0 +1,15 @@
+DCZ4{}
+{"group":1000,"user":1000,"size":155,"name":"Applications\/userpwd\/app.rb","mode":33188}
+Reyx::FS.conf_open "sys-data:users.yml" do |y|
+    @output.puts "$ $ $   PROMPT-MASK: Password:    $ $ $"
+    y[@user]['password'] = @input.gets.chomp
+end
+
+{"group":1000,"user":1000,"size":94,"name":"Applications\/userpwd\/app.yml","mode":33188}
+---
+short-name: userpwd
+full-name: Change Password
+usage: |
+  userpwd # change your password
+
+

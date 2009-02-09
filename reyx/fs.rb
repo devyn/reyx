@@ -1,5 +1,6 @@
 require 'fileutils'
 require 'yaml'
+require 'open-uri'
 module Reyx
     # file system functions (Reyx only)
     module FS; extend self
@@ -7,14 +8,18 @@ module Reyx
         @host_dir = File.expand_path(ENV['REYX_HOST_DIR']||"~/.reyx")
         @device_table = {}
         def open(p, mode='r', &blk)
-            FileUtils.mkdir_p File.dirname(translate_path(p))
+            FileUtils.mkdir_p File.dirname(translate_path(p)) unless ['r', 'r+'].include? mode
             File.open(translate_path(p), mode, &blk)
         end
         def conf_open(p, &blk)
-            y = open(p) {|f| YAML.load(f) }
+            y = open(p) {|f| YAML.load(f) } rescue {}
             yield y
             open(p,'w') {|f| YAML.dump(y, f)}
             true
+        end
+        def net_open(p, &blk)
+            o = Kernel.open(translate_path(p))
+            block_given? ? yield(o) : o
         end
         def parse_path(p)
             a = p.split(':')

@@ -1,0 +1,17 @@
+DCZ4{}
+{"group":1000,"user":1000,"size":143,"name":"Applications\/mount\/app.rb","mode":33188}
+# mount an external resource
+@output.puts "Mounting #{@args[1]} on device:#{@args[0]} . . ."
+Reyx::FS.device_table[@args.shift] = @args.shift
+
+
+{"group":1000,"user":1000,"size":167,"name":"Applications\/mount\/app.yml","mode":33188}
+--- 
+full-name: Mount Host Device
+usage: |
+  mount <mount-point> <host-path> # mount a host device on devices:<mount-point>
+
+users-allowed: 
+- admin
+short-name: mount
+

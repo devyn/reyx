@@ -1,0 +1,6 @@
+---
+short-name: userpwd
+full-name: Change Password
+usage: |
+  userpwd # change your password
+

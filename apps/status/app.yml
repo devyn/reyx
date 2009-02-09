@@ -1,0 +1,6 @@
+--- 
+full-name: Reyx VM Status
+usage: |
+  status # show mount points
+
+short-name: status

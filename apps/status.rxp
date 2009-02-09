@@ -1,0 +1,17 @@
+DCZ4{}
+{"group":1000,"user":1000,"size":193,"name":"Applications\/status\/app.rb","mode":33188}
+# Show information about the system.
+@output.puts "\e[1m# Mounted Devices\e[0m"
+Reyx::FS.device_table.each do |path, mto|
+    @output.puts "\e[32mdevice:#{path}\e[0m => \e[31m#{mto}\e[0m"
+end
+
+
+{"group":1000,"user":1000,"size":89,"name":"Applications\/status\/app.yml","mode":33188}
+--- 
+full-name: Reyx VM Status
+usage: |
+  status # show mount points
+
+short-name: status
+

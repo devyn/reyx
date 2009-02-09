@@ -1,0 +1,6 @@
+---
+short-name: switch
+full-name: Switch Users
+usage: |
+  switch <user> <command> # run command as user
+

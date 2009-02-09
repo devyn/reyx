@@ -3,7 +3,7 @@ require 'rubygems'
 require 'socket'
 require 'highline/import'
 
-sock = TCPSocket.new('localhost', 44698)
+sock = TCPSocket.new(ENV['REYX_HOST']||'localhost', 44698)
 un = ask("\e[33mUser name?\e[0m ").chomp
 pw = ask("\e[33mPassword?\e[0m  ") {|x|x.echo="*"}.chomp
 sock.puts "@ #{un}:#{pw}"

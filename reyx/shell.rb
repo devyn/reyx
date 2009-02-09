@@ -11,6 +11,12 @@ module Reyx
             o    .instance_variable_set("@input", input)
             o    .instance_variable_set("@user", as_user)
             o    .instance_variable_set("@path", path)
+            ua = nil
+            Reyx::FS.conf_open("application:#{app}:app.yml") {|y| ua = y['users-allowed']}
+            unless ua.nil? or ua.include?(as_user)
+                output.puts "error: command not allowed for #{as_user}"
+                return
+            end
             Reyx::FS.open("application:#{app}:app.rb") {|f| o.instance_eval f.read}
         end
         def parse_args(s)

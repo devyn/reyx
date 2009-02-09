@@ -1,0 +1,11 @@
+---
+short-name: update-init
+full-name: "Update sys-data:init.yml"
+users-allowed:
+- admin
+
+usage: |
+  update-init add <task> <app> <text> # add an init entry
+  update-init remove <task> <app>     # remove an init entry
+
+

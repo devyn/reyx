@@ -1,0 +1,8 @@
+--- 
+full-name: Host Device Probe
+usage: |
+  host-probed # probe for devices on the Reyx host
+
+users-allowed: 
+- admin
+short-name: host-probed

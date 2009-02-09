@@ -1,0 +1,6 @@
+---
+short-name: translate
+full-name: Translate Path
+usage: |
+  translate <path> # translate path to a host path
+

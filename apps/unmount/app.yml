@@ -1,0 +1,9 @@
+---
+short-name: unmount
+full-name: Un-mount Device
+users-allowed:
+- admin
+
+usage: |
+  unmount <device-name> # unmount the device
+

@@ -1,0 +1,9 @@
+---
+short-name: acl
+full-name: Access Control List
+users-allowed:
+- admin
+usage: |
+  acl <app> allow <user> # allow user to run app
+  acl <app> deny <user>  # stop user from running app
+

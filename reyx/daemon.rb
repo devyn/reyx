@@ -8,7 +8,7 @@ module Reyx
         def start
             Reyx::Init.up
             @thread = Thread.start do
-                @server = TCPServer.new('localhost', 44698) # Reyx Daemon Port
+                @server = TCPServer.new(ENV['REYX_HOST']||'localhost', 44698) # Reyx Daemon Port
                 loop do
                     Thread.start(@server.accept) do |sock|
                         sockinfo = {}
