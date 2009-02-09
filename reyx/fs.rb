@@ -21,6 +21,9 @@ module Reyx
             o = Kernel.open(translate_path(p))
             block_given? ? yield(o) : o
         end
+        def list(p)
+            Dir.entries(translate_path(p)) - %w(. ..)
+        end
         def parse_path(p)
             a = p.split(':')
             r = {}

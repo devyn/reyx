@@ -1,0 +1,6 @@
+---
+short-name: tree
+full-name: Tree Actions
+usage: |
+  tree -l[ist] [tree] # list the tree's contents or the current path
+
