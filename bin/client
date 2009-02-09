@@ -1,0 +1,20 @@
+#!/usr/bin/env ruby
+require 'rubygems'
+$: << File.dirname(File.expand_path(__FILE__))
+Dir.glob("reyx/*.rb"){|r|require r}
+trap("INT") {Reyx::Client.clear_screen;exit!}
+trap("TERM"){Reyx::Client.clear_screen;exit!}
+begin
+    Reyx::Client.clear_screen
+    Reyx::Client.connect_to_server
+    Reyx::Client.logon
+    loop { Reyx::Client.run_next }
+rescue Reyx::Client::EndSession
+    Reyx::Client.clear_screen
+    exit
+rescue Reyx::Client::FatalError
+    Reyx::Client.clear_screen
+    abort "error: #{$!.message}"
+rescue Reyx::Client::MinorError
+    abort "error: #{$!.message}"
+end
