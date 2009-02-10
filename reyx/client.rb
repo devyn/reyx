@@ -43,7 +43,7 @@ module Reyx
                 until (ln = @sock.gets) == "$ $ $   NEXT   $ $ $\n"
                     if ln =~ /^\$ \$ \$   PROMPT: (.*)   \$ \$ \$$/
                         @sock.puts q_ask($1)
-                    elsif ln =~ /^\$ \$ \$   PROMPT-MASK:   \$ \$ \$$/
+                    elsif ln =~ /^\$ \$ \$   PROMPT-MASK: (.*)   \$ \$ \$$/
                         @sock.puts q_ask_mask($1)
                     else
                         puts ln
