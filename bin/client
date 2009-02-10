@@ -14,7 +14,7 @@ rescue Reyx::Client::EndSession
     exit
 rescue Reyx::Client::FatalError
     Reyx::Client.clear_screen
-    abort "error: #{$!.message}"
+    abort "\e[1m\e[31merror: #{$!.message}\e[0m"
 rescue Reyx::Client::MinorError
-    abort "error: #{$!.message}"
+    warn "\e[31merror: #{$!.message}\e[0m"
 end
