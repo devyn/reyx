@@ -46,7 +46,7 @@ module Reyx
                     elsif ln =~ /^\$ \$ \$   PROMPT-MASK: (.*)   \$ \$ \$$/
                         @sock.puts q_ask_mask($1)
                     elsif ln =~ /^error: /
-                        warn "\e[31m#{ln}\e[0m"
+                        puts "\e[31m#{ln}\e[0m"
                     else
                         puts ln
                     end

@@ -1,0 +1,8 @@
+---
+short-name: term
+full-name: Terminate Thread
+users-allowed:
+- admin
+usage: |
+  term <thread-name> # terminate a thread (eg. background daemon)
+

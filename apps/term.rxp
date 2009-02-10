@@ -1,0 +1,14 @@
+DCZ4{}
+{"group":1000,"user":1000,"size":57,"name":"Applications\/term\/app.rb","mode":33188}
+Reyx::Daemon.background_threads.delete(@args.shift).kill
+
+{"group":1000,"user":1000,"size":148,"name":"Applications\/term\/app.yml","mode":33188}
+---
+short-name: term
+full-name: Terminate Thread
+users-allowed:
+- admin
+usage: |
+  term <thread-name> # terminate a thread (eg. background daemon)
+
+

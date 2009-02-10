@@ -3,9 +3,9 @@ module Reyx
     # Reyx's connection daemon
     module Daemon; extend self
         @connections = []
+        @background_threads = {}
         @thread = nil
-        attr_reader :thread
-        attr_reader :connections
+        attr_reader :thread, :connections, :background_threads
         def start
             Reyx::Init.up
             @thread = Thread.start do

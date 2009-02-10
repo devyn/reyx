@@ -4,6 +4,7 @@ module Reyx
             # TODO: implement user permissions
             args = parse_args cmd
             app  = args.shift
+            return unless app
             raise ArgumentError, 'no such command' unless File.exists? Reyx::FS.translate_path("application:#{app}:app.rb")
             o    = Object.new
             o    .instance_variable_set("@args", args)
@@ -14,7 +15,7 @@ module Reyx
             ua = nil
             Reyx::FS.conf_open("application:#{app}:app.yml") {|y| ua = y['users-allowed']}
             unless ua.nil? or ua.include?(as_user)
-                output.puts "error: command not allowed for #{as_user}"
+                raise ArgumentError, "command not allowed for #{as_user}"
                 return
             end
             Reyx::FS.open("application:#{app}:app.rb") {|f| o.instance_eval f.read}
