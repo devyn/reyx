@@ -1,0 +1,11 @@
+--- 
+full-name: Application Manager
+usage: |
+  appman install <path-to-package> # installs an application
+  appman uninstall <short-name>    # uninstalls an application
+  appman list                      # list of all applications
+  appman info <short-name>         # shows information on an application
+
+users-allowed: 
+- admin
+short-name: appman
