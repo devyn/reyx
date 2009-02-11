@@ -22,7 +22,13 @@ module Reyx
             block_given? ? yield(o) : o
         end
         def list(p)
-            Dir.entries(translate_path(p)) - %w(. ..)
+            (Dir.entries(translate_path(p)) - %w(. ..)).collect do |e|
+                if File.directory?(File.join(translate_path(p), e))
+                    "#{e}/"
+                else
+                    e
+                end
+            end
         end
         def parse_path(p)
             a = p.split(':')
@@ -77,7 +83,7 @@ module Reyx
             else
                 raise ArgumentError, 'path not translateable'
             end
-            File.join pt
+            File.join pt.select{|i|i}
         end
     end
 end

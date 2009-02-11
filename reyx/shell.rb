@@ -4,7 +4,7 @@ module Reyx
             # TODO: implement user permissions
             args = parse_args cmd
             app  = args.shift
-            return unless app
+            return if app.empty?
             raise ArgumentError, 'no such command' unless File.exists? Reyx::FS.translate_path("application:#{app}:app.rb")
             o    = Object.new
             o    .instance_variable_set("@args", args)
