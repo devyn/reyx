@@ -1,4 +1,15 @@
             <<< Reyx >>>
     the easy goin' large scale OS
 
-Reyx (pronounced: ray-icks)
+Reyx (pronounced: ray-icks) is a "parasite operating system". This means it can not run on its own, it needs a host OS to run. This may seem like a disadvantage at first, but you can program everything in Ruby! Plus, you get a high level API that is really easy to program in.
+
+* setting up the environment.
+    Just run "rake".
+
+* getting up and running
+    Well, first, you need to start the server.
+        bin/server
+    Then, in a new terminal, start the client.
+        bin/client
+    You may now run commands.
+
