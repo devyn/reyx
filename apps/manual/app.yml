@@ -1,0 +1,6 @@
+---
+short-name: manual
+full-name: Application Manual
+usage: |
+  manual <short-name> # show information on <short-name>
+
