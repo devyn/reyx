@@ -21,6 +21,9 @@ Filesystem:
         user-file:
             For accessing a file stored manually by the user.
             user-file:<user>:<file> => /Users/<user>/Personal Files/<file>
+    Access:
+        Reyx::FS.open(path, &block)      # open file, block is optional
+        Reyx::FS.conf_open(path, &block) # open a configuration file, stored in YAML, into a Hash by block
 Init:
     run(ty)     # Run the task   section in sys-data:init.yml
     up          # Run the "up"   section in sys-data:init.yml
@@ -29,4 +32,22 @@ Daemon:
     start       # Start the daemon, and run Init.up
     stop        # Stop  the daemon, closing any existing connections and running Init.down
     thread.join # Join  the daemon's thread so it doesn't close on end of file.
-
+Application:
+    - Applications/<myapp>/app.yml
+        ---
+        short-name: myapp
+        full-name: My Application
+        description: |
+          A full description of what this does.
+        usage: |
+          myapp <do-something> # it does something
+        # OPTIONAL
+        users-allowed: ...
+    - Application/<myapp>/app.rb
+        # your code here.
+        # Variables defined:
+        # @args => Application Arguments
+        # @input => Input Line (must put "$ $ $   PROMPT: <question>?   $ $ $" first)
+        # @output => Output Line
+        # @user => the user that is running this app
+        # @path => where the app is being run from.
