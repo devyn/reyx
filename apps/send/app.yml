@@ -1,0 +1,6 @@
+---
+short-name: send
+full-name: Send Message
+usage: |
+  send <socket-id> <message> # send a message to socket-id (can be found with "status")
+

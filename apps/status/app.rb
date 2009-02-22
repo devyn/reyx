@@ -5,6 +5,6 @@ Reyx::FS.device_table.each do |path, mto|
 end
 @output.puts "\e[1m# Users logged on\e[0m"
 Reyx::Daemon.connections.each do |c|
-    @output.puts "\e[36mSocket:\e[1m#{c[0].object_id.abs.to_s(16)}\e[0m | \e[34m#{c[1]['user'] or "\e[31mnot logged in"}\e[0m"
+    @output.puts "\e[36mSocket:\e[1m#{c[0].object_id.to_s(16)}\e[0m | \e[34m#{c[1]['user'] or "\e[31mnot logged in"}\e[0m"
 end
 

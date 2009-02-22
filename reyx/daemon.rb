@@ -22,7 +22,7 @@ module Reyx
                         end
                         sock.close
                         @connections.delete [sock, sockinfo]
-                        puts "\e[36mSocket:\e[1m#{sock.object_id.abs.to_s(16)}\e[0m disconnected."
+                        puts "\e[36mSocket:\e[1m#{sock.object_id.to_s(16)}\e[0m disconnected."
                     end
                 end
             end
@@ -50,6 +50,11 @@ module Reyx
             when /^\$ /
                 puts "\e[36mSocket:\e[1m#{sock.object_id.abs.to_s(16)}\e[0m executing shell command: #{cmd.chomp.sub(/^\$ /, '')}"
                 Reyx::Shell.run(cmd.chomp.sub(/^\$ /, ''), sock, sock, sockinfo['user'], sockinfo['path']) rescue sock.puts("error: #{$!.message}")
+                if sockinfo['queued_messages']
+                    sockinfo['queued_messages'].each do |qm|
+                        qm.write_msg
+                    end
+                end
                 sock.puts "$ $ $   NEXT   $ $ $"
             when /^\? /
                 puts "\e[36mSocket:\e[1m#{sock.object_id.abs.to_s(16)}\e[0m requesting information: #{cmd.chomp.sub(/^\? /, '')}"
