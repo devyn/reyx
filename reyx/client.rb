@@ -9,7 +9,7 @@ module Reyx
             print "\e[s\e[H\e[#{color}m\e[K #{str}\e[0m\n\e[u"
         end
         def connect_to_server host=nil, port=nil
-            @sock = TCPSocket.new(host||ENV['REYX_HOST']||'localhost', port.to_i||44698) rescue raise(FatalError, "can not connect to server")
+            @sock = TCPSocket.new(host||ENV['REYX_HOST']||'localhost', (port||44698).to_i) rescue raise(FatalError, "can not connect to server")
         end
         def q_ask q
             ask("\e[33m#{q}\e[0m ").chomp

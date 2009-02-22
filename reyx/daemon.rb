@@ -9,12 +9,12 @@ module Reyx
         def start(host=nil,port=nil)
             Reyx::Init.up
             @thread = Thread.start do
-                @server = TCPServer.new(host||ENV['REYX_HOST']||'localhost', port.to_i||44698) # Reyx Daemon Port
+                @server = TCPServer.new(host||ENV['REYX_HOST']||'localhost', (port||44698).to_i) # Reyx Daemon Port
                 loop do
                     Thread.start(@server.accept) do |sock|
                         sockinfo = {}
                         @connections << [sock, sockinfo]
-                        puts "\e[36mSocket:\e[1m#{sock.object_id.abs.to_s(16)}\e[0m connected."
+                        puts "\e[36mSocket:\e[1m#{sock.object_id.to_s(16)}\e[0m connected."
                         catch :loop_break_one do
                             while cmd = sock.gets
                                 process_cmd(sock, sockinfo, cmd) or throw(:loop_break_one)
@@ -42,13 +42,13 @@ module Reyx
                 if Reyx::Auth.user_auth_correct? *cmd.chomp.sub(/^\@ /, '').split(":")[0..1]
                     sockinfo['user'] = cmd.chomp.sub(/^\@ /, '').split(":")[0]
                     sock.puts "@ @ @   CONFIRMED   @ @ @"
-                    puts "\e[36mSocket:\e[1m#{sock.object_id.abs.to_s(16)}\e[0m logged in as #{sockinfo['user']}"
+                    puts "\e[36mSocket:\e[1m#{sock.object_id.to_s(16)}\e[0m logged in as #{sockinfo['user']}"
                 else
                     sock.puts "@ @ @   DENIED   @ @ @"
-                    puts "\e[36mSocket:\e[1m#{sock.object_id.abs.to_s(16)}\e[0m hacking attempt foiled! (incorrect username/password)"
+                    puts "\e[36mSocket:\e[1m#{sock.object_id.to_s(16)}\e[0m hacking attempt foiled! (incorrect username/password)"
                 end
             when /^\$ /
-                puts "\e[36mSocket:\e[1m#{sock.object_id.abs.to_s(16)}\e[0m executing shell command: #{cmd.chomp.sub(/^\$ /, '')}"
+                puts "\e[36mSocket:\e[1m#{sock.object_id.to_s(16)}\e[0m executing shell command: #{cmd.chomp.sub(/^\$ /, '')}"
                 Reyx::Shell.run(cmd.chomp.sub(/^\$ /, ''), sock, sock, sockinfo['user'], sockinfo['path']) rescue sock.puts("error: #{$!.message}")
                 if sockinfo['queued_messages']
                     sockinfo['queued_messages'].each do |qm|
@@ -57,16 +57,16 @@ module Reyx
                 end
                 sock.puts "$ $ $   NEXT   $ $ $"
             when /^\? /
-                puts "\e[36mSocket:\e[1m#{sock.object_id.abs.to_s(16)}\e[0m requesting information: #{cmd.chomp.sub(/^\? /, '')}"
+                puts "\e[36mSocket:\e[1m#{sock.object_id.to_s(16)}\e[0m requesting information: #{cmd.chomp.sub(/^\? /, '')}"
                 sock.puts sockinfo[cmd.chomp.sub(/^\? /, '')]
             when /^\-\> /
-                puts "\e[36mSocket:\e[1m#{sock.object_id.abs.to_s(16)}\e[0m changing PATH: #{cmd.chomp.sub(/^\-\> /, '')}"
+                puts "\e[36mSocket:\e[1m#{sock.object_id.to_s(16)}\e[0m changing PATH: #{cmd.chomp.sub(/^\-\> /, '')}"
                 sockinfo['path'] = cmd.chomp.sub(/^\-\> /, '')
             when ">.<\n", ">.<\r\n"
-                puts "\e[36mSocket:\e[1m#{sock.object_id.abs.to_s(16)}\e[0m says goodbye!"
+                puts "\e[36mSocket:\e[1m#{sock.object_id.to_s(16)}\e[0m says goodbye!"
                 return false
             else
-                puts "\e[36mSocket:\e[1m#{sock.object_id.abs.to_s(16)}\e[0m sent invalid command: #{cmd.inspect}"
+                puts "\e[36mSocket:\e[1m#{sock.object_id.to_s(16)}\e[0m sent invalid command: #{cmd.inspect}"
                 sock.puts "! ! !   INVALID   ! ! !"
             end
             true
