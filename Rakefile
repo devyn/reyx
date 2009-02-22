@@ -33,3 +33,12 @@ task :install_host_package do
     print "Package to install: "
     Reyx::Applications.install_host_package $stdin.gets.chomp
 end
+desc 'install all packages'
+task :install_packages => :build_packages do
+    require 'reyx/fs'
+    require 'reyx/applications'
+    FileList["apps/*.rxp"].each do |a|
+        puts "INSTALL #{a}"
+        Reyx::Applications.install_host_package a
+    end
+end
