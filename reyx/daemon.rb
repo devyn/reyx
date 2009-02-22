@@ -54,6 +54,7 @@ module Reyx
                     sockinfo['queued_messages'].each do |qm|
                         qm.write_msg
                     end
+                    sockinfo.delete 'queued_messages'
                 end
                 sock.puts "$ $ $   NEXT   $ $ $"
             when /^\? /
