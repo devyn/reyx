@@ -6,7 +6,7 @@ trap("INT") {Reyx::Client.clear_screen;exit!}
 trap("TERM"){Reyx::Client.clear_screen;exit!}
 begin
     Reyx::Client.clear_screen
-    Reyx::Client.connect_to_server
+    Reyx::Client.connect_to_server(*ARGV)
     Reyx::Client.logon
     loop { Reyx::Client.run_next }
 rescue Reyx::Client::EndSession

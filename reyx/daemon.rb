@@ -6,10 +6,10 @@ module Reyx
         @background_threads = {}
         @thread = nil
         attr_reader :thread, :connections, :background_threads
-        def start
+        def start(host=nil,port=nil)
             Reyx::Init.up
             @thread = Thread.start do
-                @server = TCPServer.new(ENV['REYX_HOST']||'localhost', 44698) # Reyx Daemon Port
+                @server = TCPServer.new(host||ENV['REYX_HOST']||'localhost', port.to_i||44698) # Reyx Daemon Port
                 loop do
                     Thread.start(@server.accept) do |sock|
                         sockinfo = {}
