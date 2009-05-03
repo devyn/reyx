@@ -1,3 +1,5 @@
+require 'rubygems'
+
 desc 'run on setup'
 task :default => [:clean, :build_packages, :vm_dir]
 desc 'clean the application packages'
@@ -11,7 +13,7 @@ task :build_packages do
         next unless File.directory? e
         puts "BUILDRXP #{e}.rxp"
         f = File.open("#{e}.rxp", 'w')
-        z4f = Z4File.create(f)
+        z4f = Z4File.create(f, 'vendor' => "Reyx")
         FileList["#{e}/**"].each do |fe|
             z4f.write_file fe, :name => "Applications/#{fe.sub(/^apps\//, '')}"
         end

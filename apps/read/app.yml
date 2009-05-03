@@ -1,0 +1,6 @@
+---
+full-name: Read File
+short-name: read
+usage: |
+  read <file>
+

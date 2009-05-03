@@ -5,5 +5,7 @@ when '-l', '-list'
         # TODO: something more interesting in the future...
         @output.puts e
     end
+when '-d', '-delete'
+    Reyx::FS.delete(@args.shift)
 end
 

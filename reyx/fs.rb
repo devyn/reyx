@@ -7,6 +7,7 @@ module Reyx
         attr_accessor :host_dir, :device_table
         @host_dir = File.expand_path(ENV['REYX_HOST_DIR']||"~/.reyx")
         @device_table = {}
+        @permitted = YAML.load_file(File.expand_path(ENV['REYX_HOST_DIR']||"~/.reyx")+'/.pset') rescue {}
         def open(p, mode='r', &blk)
             FileUtils.mkdir_p File.dirname(translate_path(p)) unless ['r', 'r+'].include? mode
             File.open(translate_path(p), mode, &blk)
@@ -29,6 +30,9 @@ module Reyx
                     e
                 end
             end
+        end
+        def delete(p)
+            FileUtils.rm_r translate_path(p)
         end
         def parse_path(p)
             a = p.split(':')
@@ -57,6 +61,10 @@ module Reyx
             when 'user-file'
                 r[:user] = a.shift
                 r[:file] = a.join('/')
+            when /^\^(.+)$/
+                r[:service] = 'user-file'
+                r[:user] = $1
+                r[:file] = a.join('/')
             else
                 r[:data] = a
             end
@@ -84,6 +92,13 @@ module Reyx
                 raise ArgumentError, 'path not translateable'
             end
             File.join pt.select{|i|i}
+        end
+        def permitted?(user, path)
+            if acl = @permitted.find{|pt| pt =~ Regexp.new(path)}
+                return acl.include?(user)
+            else
+                return true
+            end
         end
     end
 end

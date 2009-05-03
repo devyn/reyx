@@ -45,6 +45,8 @@ module Reyx
                         @sock.puts q_ask($1)
                     elsif ln =~ /^\$ \$ \$   PROMPT-MASK: (.*)   \$ \$ \$$/
                         @sock.puts q_ask_mask($1)
+                    elsif ln =~ /^\$ \$ \$   READLINE   \$ \$ \$$/
+                        @sock.puts $stdin.gets
                     elsif ln =~ /^error: /
                         puts "\e[31m#{ln.chomp}\e[0m"
                     else

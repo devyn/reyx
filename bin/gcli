@@ -1,0 +1,187 @@
+#!/usr/bin/env shoes
+# vim:ft=ruby
+
+require 'socket'
+
+$noconn = proc { Shoes.app :width => 400, :height => 300, :title => "Reyx" do
+    background black
+    background rgb(0.2,0.0,0.0)..rgb(0,0,0,0), :height => 0.2, :width => 1.0, :top => 0, :left => 0
+    background rgb(0.2,0.0,0.0)..rgb(0,0,0,0), :width => 0.2, :height => 1.0, :top => 0, :left => 0, :angle => 90
+    background rgb(0.2,0.0,0.0)..rgb(0,0,0,0), :height => 0.2, :width => 1.0, :top => 0.8, :left => 0, :angle => 180
+    background rgb(0.2,0.0,0.0)..rgb(0,0,0,0), :width => 0.2, :height => 1.0, :top => 0, :left => 0.8, :angle => 270
+    stack :top => 0.1, :left => 0.1, :height => 0.8, :width => 0.8 do
+        subtitle "error", :stroke => red, :emphasis => 'italic'
+        para "Could not connect to Reyx server. Please check that it is running and that you have a connection.", :stroke => red
+    end
+end }
+
+$sock = TCPSocket.new(ENV['REYX_HOST']||'localhost', 44698) rescue ($noconn.call; nil)
+
+$wnd = proc { Shoes.app :title => "Reyx" do
+    background black
+    def ansi_scheme(i)
+        rt = [nil,nil,nil]
+        case i
+        when 0
+            rt = [white, rgb(0,0,0,0), 10]
+        when 1
+            rt[2] = 11
+        when 22
+            rt[2] = 10
+        when 31
+            rt[0] = red
+        when 32
+            rt[0] = lime
+        when 33
+            rt[0] = yellow
+        when 34
+            rt[0] = blue
+        when 35
+            rt[0] = magenta
+        when 36
+            rt[0] = cyan
+        when 41
+            rt[1] = rgb(0.5,0.0,0.0)
+        when 42
+            rt[1] = rgb(0.0,0.5,0.0)
+        when 43
+            rt[1] = rgb(0.5,0.5,0.0)
+        when 44
+            rt[1] = rgb(0.0,0.0,0.5)
+        when 45
+            rt[1] = rgb(0.5,0.0,0.5)
+        when 46
+            rt[1] = rgb(0.0,0.5,0.5)
+        end
+        return rt
+    end
+    def owrite(text)
+        text.gsub("\t", '    ').split(/(\e\[\d+m|\n)/m).each do |pt|
+            case pt
+            when /^\e\[(\d+)m$/
+                as = ansi_scheme($1.to_i)
+                @output.append { @co = para "", :stroke => as[0]||@co.style[:stroke], :fill => as[1]||@co.style[:fill], :size => as[2]||@co.style[:size], :font => 'monospace', :margin => 0 }
+            when "\n"
+                @co.text += "\n"
+                @output.append { @co = para "", @co.style }
+            else
+                @co.text += pt
+            end
+        end
+        @output.scroll_top = @output.scroll_max
+    end
+    @history = []
+    @output = flow(:top => 0, :left => 0, :width => 1.0, :height => 0.95, :scroll => true) { @co = para "", :stroke => white, :fill => rgb(0,0,0,0), :size => 10, :margin => 0, :font => 'monospace' }
+    @cbox = flow(:top => 0.95, :left => 0, :width => 1.0, :height => 0.05) { background black..rgb(0.0,0.2,0.2); caption $user, :stroke => lightsteelblue; caption ">", :stroke => orange; @cmd = para "", :stroke => white; @cursor = para "  ", :fill => white }
+    @qbox = flow(:top => 0.95, :left => 0, :width => 1.0, :height => 0.05) { background black..rgb(0.2,0.0,0.0); @q = caption "", :stroke => lightgreen; caption "?", :stroke => yellow; @input = para "", :stroke => white; @masking = para "", :stroke => white; @masking.hide; @cursor2 = para "  ", :fill => white }
+    @qbox.hide
+    animate(2) { @cursor.toggle; @cursor2.toggle }
+    keypress do |key|
+        case key
+        when :control_h
+            home = "^#$user:"
+            if @iq
+                @masking.text += "*"*home.size
+                @input.text += home
+            else
+                @cmd.text += home
+            end
+        when :up
+            @cmd.text = @history[(@history.index(@cmd.text)||0)-1].to_s unless @iq
+        when :down
+            @cmd.text = @history[(@history.index(@cmd.text)||0)+1].to_s unless @iq
+        when :delete, :backspace, :shift_backspace
+            if @iq
+                @masking.text = @masking.text.sub(/.$/,'')
+                @input.text = @input.text.sub(/.$/,'')
+            else
+                @cmd.text = @cmd.text.sub(/.$/,'')
+            end
+        when "\n"
+            Thread.start do
+                if @iq
+                    owrite "\e[32m#{@q.text}\e[0m#{@iq == :mask ? @masking.text : @input.text}\n"
+                    $sock.puts @input.text
+                    @masking.text = ''
+                    @input.text = ''
+                    @q.text = ''
+                    @masking.hide
+                    @input.show
+                    @qbox.hide
+                    @iq = false
+                else
+                    case t = @cmd.text
+                    when 'exit', 'quit'
+                        $sock.puts ">.<"
+                        $sock.close
+                        self.close
+                    when 'clear'
+                        @output.clear { @co = para "", :stroke => white, :fill => rgb(0,0,0,0), :size => 10, :margin => 0, :font => 'monospace' }
+                    when 'debug-text'
+                        @output.contents.each do |cnt|
+                            puts "#{cnt.style.inspect} #{cnt.text.inspect}"
+                        end
+                    else
+                        owrite "\e[36m$ \e[0m#{t}\n"
+                        @cbox.hide
+                        $sock.puts "$ #{t}"
+                        until (ln = $sock.gets) == "$ $ $   NEXT   $ $ $\n"
+                            if ln =~ /^\$ \$ \$   PROMPT: (.*)   \$ \$ \$$/
+                                @q.text = $1
+                                @iq = true
+                                @qbox.show
+                            elsif ln =~ /^\$ \$ \$   PROMPT-MASK: (.*)   \$ \$ \$$/
+                                @q.text = $1
+                                @iq = :mask
+                                @input.hide
+                                @masking.show
+                                @qbox.show
+                            elsif ln =~ /^\$ \$ \$   READLINE   \$ \$ \$$/
+                                @q.text = ''
+                                @iq = true
+                                @qbox.show
+                            elsif ln =~ /^error: /
+                                owrite "\e[31m#{ln.chomp}\e[0m\n"
+                            else
+                                owrite ln
+                            end
+                        end
+                        @history << t
+                        @cbox.show
+                    end
+                    @cmd.text = ""
+                end
+            end
+        when String
+            @masking.text += "*" if @iq
+            (@iq ? @input : @cmd).text += key
+        else
+            owrite "\e[1m\e[31mUNKNOWN KEY PRESSED:\e[22m \e[43m#{key}\e[0m\n"
+        end
+    end
+end }
+
+Shoes.app :width => 400, :height => 300, :title => "Reyx" do
+    background black
+    background rgb(0.0,0.2,0.2)..rgb(0,0,0,0), :height => 0.2, :width => 1.0, :top => 0, :left => 0
+    background rgb(0.0,0.2,0.2)..rgb(0,0,0,0), :width => 0.2, :height => 1.0, :top => 0, :left => 0, :angle => 90
+    background rgb(0.0,0.2,0.2)..rgb(0,0,0,0), :height => 0.2, :width => 1.0, :top => 0.8, :left => 0, :angle => 180
+    background rgb(0.0,0.2,0.2)..rgb(0,0,0,0), :width => 0.2, :height => 1.0, :top => 0, :left => 0.8, :angle => 270
+    @login = proc do
+        $sock.puts "@ #{@un.text}:#{@pw.text}"
+        if $sock.gets == "@ @ @   CONFIRMED   @ @ @\n"
+            $user = @un.text
+            $wnd.call
+            self.close
+        else
+            alert "Wrong user or pass... try again!"
+        end
+    end
+    stack :top => 0.1, :left => 0.1, :height => 0.8, :width => 0.8 do
+        subtitle "login", :stroke => yellow, :emphasis => 'italic'
+        flow { para "user: ", :font => 'monospace', :stroke => white; @un = edit_line }
+        flow { para "pass: ", :font => 'monospace', :stroke => white; @pw = edit_line :secret => '*' }
+        tagline link("Go", :click => @login)
+    end
+end if $sock
+

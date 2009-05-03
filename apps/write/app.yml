@@ -1,0 +1,6 @@
+---
+full-name: Write File
+short-name: write
+usage: |
+  write <file>
+
